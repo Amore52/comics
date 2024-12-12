@@ -1,6 +1,7 @@
 import random
 import requests
 import os
+import io
 
 from telegram import Bot
 from dotenv import load_dotenv
@@ -20,7 +21,7 @@ def get_random_comic():
         alt_text = comics_json['alt']
         return image_url, alt_text
     else:
-        return f"Ошибка: {response.status_code}"
+        return None, f"Ошибка: {response.status_code}"
 
 
 def send_comic_to_telegram(bot, chat_id):
@@ -28,8 +29,11 @@ def send_comic_to_telegram(bot, chat_id):
     if image_url:
         image_response = requests.get(image_url)
         image_response.raise_for_status()
-        bot.send_photo(chat_id=chat_id, photo=image_response.content, caption=alt_text)
+        image_file = io.BytesIO(image_response.content)
+        bot.send_photo(chat_id=chat_id, photo=image_file, caption=alt_text)
         return "Комикс отправлен"
+    else:
+        return alt_text
 
 
 def main():
@@ -37,7 +41,8 @@ def main():
     TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
     CHAT_ID = os.getenv('CHAT_ID')
     bot = Bot(token=TELEGRAM_TOKEN)
-    send_comic_to_telegram(bot, CHAT_ID)
+    result = send_comic_to_telegram(bot, CHAT_ID)
+    print(result)
 
 
 if __name__ == "__main__":
