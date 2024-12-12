@@ -6,7 +6,7 @@
 
 Для запуска этого проекта вам потребуется:
 
-- Python 3.12 или выше
+- Python 3.9
 - Установленные библиотеки: `requests`, `python-telegram-bot`, `python-dotenv`
 - Аккаунт в Telegram и создание бота с использованием [BotFather](https://core.telegram.org/bots#botfather)
 - Получение токена бота и идентификатора чата
